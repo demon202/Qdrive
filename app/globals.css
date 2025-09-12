@@ -1,26 +1,447 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@custom-variant dark (&:is(.dark *));
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-bg-Dark text-dark-200 min-h-screen;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 3px;
+    border-radius: 50px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 50px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #dc0000;
+  }
+
+  /* Remove scrollbar */
+  .remove-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    border-radius: 0px;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 0px;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+  }
+
+  .recharts-responsive-container {
+    height: initial;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme{
+  --color-primary: #dc0000;
+  --color-primary-50: #dc0000;
+  --color-primary-orange: #F9AB72;
+  --color-primary-pink: #dc0000;
+  --color-primary-green:  #3dd9b3;
+
+  --color-light-100: #F8EEDF;
+  --color-light-200: #E8C999;
+  --color-light-300: #dc0000;
+  --color-light-400: #F2F4F8;
+
+  --color-dark-100: #8E1616;
+  --color-dark-200: #000000;
+
+  --color-brand: #dc0000;
+  --color-brand-100: #dc0000;
+
+  --color-error: #b80000;
+
+  --color-bg-Dark: #000000;
+  --color-bg-Light: #FFFFFF;
+}
+@layer utilities {
+.center{
+  @apply flex h-screen items-center justify-center bg-brand;
+}
+.h1 {
+    @apply text-[34px] leading-[42px] font-bold;
+  }
+  .h2 {
+    @apply text-[24px] leading-[36px] font-bold;
+  }
+  .h3 {
+    @apply text-[20px] leading-[28px] font-semibold;
+  }
+  .h4 {
+    @apply text-[18px] leading-[20px] font-medium;
+  }
+  .h5 {
+    @apply text-[16px] leading-[24px] font-semibold;
+  }
+  .subtitle-1 {
+    @apply text-[16px] leading-[24px] font-medium;
+  }
+   .subtitle-2 {
+    @apply text-[14px] leading-[20px] font-semibold;
+  }
+  .body-1 {
+    @apply text-[16px] leading-[24px] font-normal;
+  }
+  .body-2 {
+    @apply text-[14px] leading-[20px] font-normal;
+  }
+  .button {
+    @apply text-[14px] leading-[20px] font-medium;
+  }
+  .caption {
+    @apply text-[12px] leading-[16px] font-normal;
+  }
+  .overline {
+    @apply text-[10px] leading-[14px] font-normal;
+  }
+
+  /* ===== HELPER CLASSES */
+  
+  .container {
+    @apply mx-auto max-w-7xl px-5;
+  }
+   .primary-btn {
+    @apply bg-brand hover:bg-brand-100 transition-all rounded-full;
+  }
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+   /* =====  SHADCN OVERRIDES */
+   .shad-no-focus {
+    @apply outline-none ring-offset-transparent focus:ring-transparent focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0;
+  }
+  .shad-input {
+    @apply border-none shadow-none p-0  placeholder:text-light-200 ;
+  }
+  .shad-form-item {
+    @apply flex h-[78px] flex-col justify-center rounded-xl border-light-300 px-4 ;
+  }
+  .shad-form-label {
+    @apply text-light-100 mb-2 pt-2 w-full  ;
+  }
+  .shad-form-message {
+    @apply bg-brand ml-4 ;
+  }
+  .shad-alert-dialog {
+    @apply space-y-4 max-w-[95%] sm:w-fit rounded-xl md:rounded-[30px] px-4 md:px-8 py-10 bg-black outline-none text-light-200;
+  }
+  .shad-submit-btn {
+    @apply bg-brand hover:bg-brand-100 transition-all rounded-full;
+  }
+  .shad-otp {
+    @apply w-full flex gap-1 sm:gap-2 justify-between;
+  }
+
+  .shad-otp-slot {
+    @apply text-[40px] font-medium rounded-xl ring-brand  text-brand-100 justify-center flex border-2 border-light-300 size-12 md:size-16 gap-5;
+  }
+  .shad-sheet {
+    @apply pt-0 bg-bg-Dark;
+  }
+  .shad-sheet button, .shad-dialog button {
+    @apply focus:ring-0 focus:ring-offset-0 focus-visible:border-none outline-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0;
+  }
+  .shad-dropdown-item {
+    @apply cursor-pointer;
+  }
+   .shad-dialog {
+    @apply rounded-[26px] w-[90%] max-w-[400px] px-6 py-8 bg-white;
+  }
+   .shad-chart-title {
+    @apply text-white;
+  }
+  .shad-select-item {
+    @apply cursor-pointer;
+  }
+
+    /* Sidebar & MobileNavigation */
+  .nav-icon {
+    @apply w-6 filter opacity-15 ;
+  }
+  .nav-icon-active {
+    @apply invert-0 opacity-100;
+  }
+
+  /* =====  STYLE CLASSES */
+
+  /* Root Layout */
+   .main-content {
+    @apply  h-full flex-1 overflow-auto bg-light-200 px-5 py-7 sm:mr-7 sm:rounded-[30px] md:mb-7 md:px-9 md:py-10;
+  }
+   /* Dashboard */
+  .dashboard-container {
+    @apply mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-2 xl:gap-10;
+  }
+   .dashboard-summary-list {
+    @apply mt-6 grid grid-cols-1 gap-4 xl:mt-10 xl:grid-cols-2 xl:gap-9;
+  }
+  .dashboard-summary-card {
+    @apply relative mt-6 rounded-[20px] bg-white p-5 transition-all hover:scale-105;
+  }
+  .summary-type-icon {
+    @apply absolute -left-3 top-[-25px] z-10 w-[190px] object-contain;
+  }
+  .summary-type-size {
+    @apply relative z-20 w-full text-right;
+  }
+   .summary-type-title {
+    @apply  relative z-20 text-center;
+  }
+   .dashboard-recent-files {
+    @apply h-full rounded-[20px] xl:h-[654px] overflow-auto bg-white p-5 xl:p-7;
+  }
+    .recent-file-details {
+    @apply flex w-full justify-between items-center;
+  }
+  .recent-file-name {
+    @apply line-clamp-1 w-full text-light-100 sm:max-w-[200px] lg:max-w-[250px];
+  }
+    .recent-file-date {
+    @apply  text-light-100/80;
+  }
+  .empty-list {
+    @apply mt-10 text-center text-light-200;
+  }
+
+   /* Type page */
+  .page-container {
+    @apply mx-auto flex w-full max-w-7xl flex-col items-center gap-8 ;
+  }
+  .total-size-section {
+    @apply flex mt-2 flex-col justify-between sm:flex-row sm:items-center;
+  }
+  .file-list {
+    @apply grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+  .sort-container {
+    @apply mt-5 flex items-center sm:mt-0 sm:gap-3;
+  }
+
+  /* ActionsDropdown */
+  .rename-input-field {
+    @apply h-[52px] w-full rounded-full border px-4;
+  }
+  .delete-confirmation {
+    @apply text-center text-bg-Dark;
+  }
+  .delete-file-name {
+    @apply font-medium text-brand-100;
+  }
+  .modal-cancel-button {
+    @apply h-[52px] flex-1 rounded-full bg-light-200 text-bg-Dark hover:bg-amber-300;
+  }
+  .modal-submit-button {
+    @apply !mx-0 h-[52px] w-full flex-1;
+  }
+
+   /* ActionsModalContent */
+  .file-details-thumbnail {
+    @apply !mb-1 flex items-center gap-3 rounded-xl border border-light-200/40 bg-light-400/50 p-3;
+  }
+  .file-details-label {
+    @apply w-[30%] text-bg-Dark;
+  }
+  .file-details-value {
+    @apply flex-1;
+  }
+   .share-wrapper {
+    @apply !mt-2 space-y-2;
+  }
+  .share-input-field {
+    @apply  h-[52px] w-full rounded-full border px-4;
+  }
+  .share-remove-user {
+    @apply rounded-full bg-transparent text-light-100 shadow-none hover:bg-transparent;
+  }
+  .remove-icon {
+    @apply aspect-square rounded-full;
+  }
+
+
+  /* AuthForm */
+  .auth-form {
+    @apply flex max-h-[800px] w-full max-w-[580px] flex-col justify-center space-y-6 transition-all lg:h-full lg:space-y-8;
+  }
+  .form-title {
+    @apply text-center text-light-100 md:text-left;
+  }
+   .form-submit-button {
+    @apply h-[66px];
+  }
+   .error-message {
+    @apply mx-auto w-fit rounded-xl bg-error/5 px-8 py-4 text-center text-error;
+  }
+
+  
+  /* Card */
+  .file-card {
+    @apply flex cursor-pointer flex-col gap-6 rounded-[18px] bg-white p-5 shadow-sm transition-all;
+  }
+
+  .file-card-details {
+    @apply flex flex-col gap-2 text-light-100;
+  }
+
+   /* Chart */
+  .chart {
+    @apply flex items-center rounded-[20px] bg-brand p-2 text-white md:flex-col xl:flex-row;
+  }
+  .chart-container {
+    @apply mx-auto aspect-square w-[180px] text-white xl:w-[200px];
+  }
+  .polar-grid {
+    @apply first:fill-white/20 last:fill-brand;
+  }
+  .chart-details {
+    @apply flex-1 items-start px-3 py-0 sm:px-5 lg:p-3 xl:pr-5;
+  }
+  .chart-total-percentage {
+    @apply fill-white text-4xl font-bold;
+  }
+  .chart-title {
+    @apply font-bold md:text-center lg:text-left;
+  }
+  .chart-description {
+    @apply  mt-2 w-full text-white/70 md:text-center lg:text-left;
+  }
+
+  /* FileUploader */
+  .uploader-button {
+  @apply h-[52px] gap-2 px-10 flex items-center justify-center mx-auto;
+}
+  .uploader-preview-list {
+    @apply fixed bottom-10 right-10 z-50 flex size-full h-fit max-w-[480px] flex-col gap-3 rounded-[20px] bg-white p-7;
+  }
+  .uploader-preview-item {
+    @apply flex items-center justify-between  gap-3 rounded-xl p-3;
+  }
+  .preview-item-name {
+    @apply mb-2 line-clamp-1 max-w-[300px];
+  }
+
+  .error-toast {
+    @apply bg-red-400 !rounded-[10px];
+  }
+
+  /* Header */
+  .header {
+    @apply hidden items-center justify-between gap-5 p-5 sm:flex lg:py-7 xl:gap-10;
+  }
+  .header-wrapper {
+    @apply  min-w-fit gap-4;
+  }
+  .sign-out-button {
+    @apply h-[52px] min-w-[54px] items-center rounded-full bg-brand/10 p-0 text-brand shadow-none transition-all hover:bg-brand/20;
+  }
+  /* Mobile Navigation */
+  .mobile-header {
+    @apply flex h-[60px] justify-between px-5 sm:hidden ;
+  }
+  .header-user {
+    @apply my-3 flex items-center gap-2 rounded-full p-1 text-light-100 sm:justify-center sm:bg-brand/10 lg:justify-start lg:p-3 ;
+  }
+  .header-user-avatar {
+    @apply aspect-square w-10 rounded-full object-cover;
+  }
+  .mobile-nav {
+    @apply  flex-1 gap-1 text-brand;
+  }
+  .mobile-nav-list {
+    @apply flex flex-1 flex-col gap-4;
+  }
+  .mobile-nav-item {
+    @apply flex text-light-100 gap-4 w-full justify-start items-center px-6 h-[52px] rounded-full;
+  }
+  .mobile-sign-out-button {
+  @apply flex h-[52px] w-50 items-center justify-center mx-auto gap-4 rounded-full bg-brand/10 px-6 text-brand shadow-none transition-all hover:bg-brand/20;
+}
+
+
+
+  /* OTP Modal */
+  .otp-close-button {
+    @apply absolute -right-1 -top-7 cursor-pointer sm:-right-2 sm:-top-4 ;
+  }
+
+  /* Search */
+  .search {
+    @apply relative w-full md:max-w-[480px];
+  }
+  .search-input-wrapper {
+    @apply flex h-[52px] flex-1 items-center gap-3 rounded-full px-4 bg-light-200 text-bg-Dark ;
+  }
+  .search-input {
+    @apply w-full border-none p-0 shadow-none placeholder:text-primary  text-bg-Dark;
+  }
+  .search-result {
+    @apply absolute left-0 top-16 z-50 flex w-full flex-col gap-3 rounded-[20px] p-4 bg-primary text-bg-Dark;
+  }
+  .empty-result {
+    @apply text-center text-bg-Dark;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply hidden h-screen w-[90px] flex-col overflow-auto px-5 py-7 sm:flex lg:w-[280px] xl:w-[325px];
+  }
+  .sidebar-nav {
+    @apply mt-9 flex-1 gap-1 text-brand;
+  }
+  .sidebar-nav-item {
+    @apply flex text-light-100 gap-4 rounded-xl lg:w-full justify-center lg:justify-start items-center lg:px-[30px] h-[52px] lg:rounded-full hover:bg-light-200;
+  }
+  .sidebar-nav-item:hover .nav-icon {
+  @apply invert;
+}
+  .sidebar-user-info {
+    @apply mt-4 flex items-center justify-center gap-2 rounded-full bg-brand/10 p-1 text-light-100 lg:justify-start lg:p-3;
+  }
+  .sidebar-user-avatar {
+    @apply aspect-square w-10 rounded-full object-cover;
+  }
+  .shad-active {
+    @apply bg-brand text-white ;
+  }
+  /* Sort */
+  .sort-select {
+    @apply h-11 w-full rounded-[8px] border-transparent bg-white text-primary !shadow-sm sm:w-[210px];
+  }
+  .sort-select-content {
+    @apply bg-bg-Light 
+  }
+
+  /* Thumbnail */
+  .thumbnail {
+    @apply size-[50px] min-w-[50px] overflow-hidden rounded-full bg-brand/10;
+  }
+  .thumbnail-image {
+    @apply size-full object-cover object-center;
+  } 
 }
