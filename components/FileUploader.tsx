@@ -35,17 +35,18 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
           return toast(`${file.name} is too large. Max file size is 50MB.`);
         }
 
-        const { getRootProps, getInputProps } = useDropzone({
-                onDrop,
-                multiple: true,
-                noClick: false,
-                noKeyboard: true,
-                accept: {
-                  "image/*": [], 
-                  "video/*": [], 
-                  "application/pdf": [],
-                },
-              });
+        return uploadFile({ file, ownerId, accountId, path })
+            .then((uploadedFile) => {
+              if (uploadedFile) {
+                setFiles((prevFiles) => prevFiles.filter((f) => f.name !== file.name));
+              }
+            })
+            .catch((err) => {
+              toast.error(`Upload failed for ${file.name}: ${err.message}`);
+              console.error("Upload error:", err);
+          },
+        );
+      });
 
       await Promise.all(uploadPromises);
     },
@@ -65,11 +66,12 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   return (
     <div {...getRootProps()} className="cursor-pointer">
       <input {...getInputProps()} />
-      <Button type="button" className={cn("uploader-button", className)}>
+        <Button type="button" className={cn("uploader-button", className)}>
         <input {...getInputProps()} className="hidden" />
         <Image src="/assets/icons/upload.svg" alt="upload" width={24} height={24} />
         <p>Upload</p>
-      </Button>
+        </Button>
+
       {files.length > 0 && (
         <ul className="uploader-preview-list">
           <h4 className="h4 text-light-100">Uploading</h4>
