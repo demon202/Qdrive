@@ -51,37 +51,41 @@ export const calculatePercentage = (sizeInBytes: number) => {
   return Number(percentage.toFixed(1));
 };
 
-export const getFileType = (fileName: string) => {
-  const extension = fileName.split('.').pop()?.toLowerCase();
+export const getFileType = (file: File | string) => {
+  let extension = "";
+  let mimeType = "";
 
-  if (!extension) return { type: 'other', extension: '' };
+  if (typeof file === "string") {
+    extension = file.split(".").pop()?.toLowerCase() || "";
+  } else {
+    extension = file.name.split(".").pop()?.toLowerCase() || "";
+    mimeType = file.type;
+  }
 
-  const documentExtensions = [
+ const documentExtensions = [
     'pdf', 'doc', 'docx', 'txt', 'xls', 'xlsx', 'csv', 'rtf',
     'ods', 'ppt', 'odp', 'md', 'html', 'htm', 'epub', 'pages',
     'fig', 'psd', 'ai', 'indd', 'xd', 'sketch', 'afdesign',
     'afphoto'
   ];
 
-  const imageExtensions = [
-    'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp',
-    'heic', 'heif'   // iOS photo formats
-  ];
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp', 'heic', 'heif'];
 
   const videoExtensions = ['mp4', 'avi', 'mov', 'mkv', 'webm'];
   const audioExtensions = ['mp3', 'wav', 'ogg', 'flac'];
 
   if (documentExtensions.includes(extension))
-    return { type: 'document', extension };
-  if (imageExtensions.includes(extension))
-    return { type: 'image', extension };
-  if (videoExtensions.includes(extension))
-    return { type: 'video', extension };
-  if (audioExtensions.includes(extension))
-    return { type: 'audio', extension };
+    return { type: "document", extension };
+  if (imageExtensions.includes(extension) || mimeType.startsWith("image/"))
+    return { type: "image", extension };
+  if (videoExtensions.includes(extension) || mimeType.startsWith("video/"))
+    return { type: "video", extension };
+  if (audioExtensions.includes(extension) || mimeType.startsWith("audio/"))
+    return { type: "audio", extension };
 
-  return { type: 'other', extension };
+  return { type: "other", extension };
 };
+
 
 
 export const formatDateTime = (isoString: string | null | undefined) => {
