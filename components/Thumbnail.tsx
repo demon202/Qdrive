@@ -20,7 +20,7 @@ export const Thumbnail = ({
   const isImage = type === "image" && extension.toLowerCase() !== "svg";
 
   // fallback if extension is unknown
-  const fallbackIcon = getFileIcon(extension, type) || "/default-file-icon.png";
+  const fallbackIcon = getFileIcon(extension, type) || "/assets/icons/file-document.svg";
 
   return (
     <figure className={cn("thumbnail", className)}>
