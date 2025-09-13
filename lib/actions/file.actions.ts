@@ -30,12 +30,19 @@ export const uploadFile = async ({
   if (!currentUser) throw new Error("User not authenticated");
 
   try {
-    // Convert browser File -> ArrayBuffer -> Buffer
-    const arrayBuffer = await file.arrayBuffer();
+    // Make sure file is a Blob/File and has arrayBuffer
+    let arrayBuffer: ArrayBuffer;
+
+    if (typeof file.arrayBuffer === "function") {
+      arrayBuffer = await file.arrayBuffer();
+    } else {
+      // Fallback for mobile
+      arrayBuffer = await new Response(file).arrayBuffer();
+    }
+
     const buffer = Buffer.from(arrayBuffer);
     const inputFile = InputFile.fromBuffer(buffer, file.name || `upload-${Date.now()}`);
 
-    // Upload file to Appwrite storage
     const bucketFile = await storage.createFile(bucketId, ID.unique(), inputFile);
 
     // Create database record
@@ -61,9 +68,11 @@ export const uploadFile = async ({
     revalidatePath(path);
     return parseStringify(newFile);
   } catch (error) {
+    console.error("Upload failed:", error);
     handleError(error, "Failed to upload file");
   }
 };
+
 
 // ==================== GET FILES ====================
 const createQueries = (
