@@ -35,16 +35,17 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
           return toast(`${file.name} is too large. Max file size is 50MB.`);
         }
 
-        return uploadFile({ file, ownerId, accountId, path }).then(
-          (uploadedFile) => {
-            if (uploadedFile) {
-              setFiles((prevFiles) =>
-                prevFiles.filter((f) => f.name !== file.name),
-              );
-            }
-          },
-        );
-      });
+        const { getRootProps, getInputProps } = useDropzone({
+                onDrop,
+                multiple: true,
+                noClick: false,
+                noKeyboard: true,
+                accept: {
+                  "image/*": [], 
+                  "video/*": [], 
+                  "application/pdf": [],
+                },
+              });
 
       await Promise.all(uploadPromises);
     },
@@ -65,12 +66,8 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
     <div {...getRootProps()} className="cursor-pointer">
       <input {...getInputProps()} />
       <Button type="button" className={cn("uploader-button", className)}>
-        <Image
-          src="/assets/icons/upload.svg"
-          alt="upload"
-          width={24}
-          height={24}
-        />{" "}
+        <input {...getInputProps()} className="hidden" />
+        <Image src="/assets/icons/upload.svg" alt="upload" width={24} height={24} />
         <p>Upload</p>
       </Button>
       {files.length > 0 && (
