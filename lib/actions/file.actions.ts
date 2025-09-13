@@ -29,13 +29,13 @@ export const uploadFile = async ({
   if (!currentUser) throw new Error("User not authenticated");
 
   try {
-    const inputFile = InputFile.fromBuffer(file, file.name);
+    // 👇 Convert browser File -> ArrayBuffer -> Buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    const bucketFile = await storage.createFile(
-      bucketId,
-      ID.unique(),
-      inputFile,
-    );
+    const inputFile = InputFile.fromBuffer(buffer, file.name || `upload-${Date.now()}`);
+
+    const bucketFile = await storage.createFile(bucketId, ID.unique(), inputFile);
 
     const fileDocument = {
       type: getFileType(bucketFile.name).type,
@@ -48,14 +48,9 @@ export const uploadFile = async ({
       users: [],
       bucketFileId: bucketFile.$id,
     };
-    
 
-    const newFile = await databases.createDocument(
-        databaseId,
-        filesCollectionId,
-        ID.unique(),
-        fileDocument,
-      )
+    const newFile = await databases
+      .createDocument(databaseId, filesCollectionId, ID.unique(), fileDocument)
       .catch(async (error: unknown) => {
         await storage.deleteFile(bucketId, bucketFile.$id);
         handleError(error, "Failed to create file document");
@@ -67,6 +62,7 @@ export const uploadFile = async ({
     handleError(error, "Failed to upload file");
   }
 };
+
 
 const createQueries = (
   currentUser: Models.Document,
