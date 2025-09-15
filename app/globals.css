@@ -389,6 +389,16 @@
   .otp-close-button {
     @apply absolute -right-1 -top-7 cursor-pointer sm:-right-2 sm:-top-4 ;
   }
+  /*Incorrect Shake Animation*/
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+  }
+
+  .animate-shake {
+    animation: shake 0.5s;
+  }
 
   /* Search */
   .search {
