@@ -21,6 +21,7 @@
     "appwrite": "^18.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "formidable": "^3.5.4",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.516.0",
     "next": "15.3.3",

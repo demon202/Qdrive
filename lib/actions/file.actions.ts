@@ -26,40 +26,53 @@ export const uploadFile = async ({
   path,
 }: UploadFileProps) => {
   const { storage, databases } = await createAdminClient();
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser(); // Needed to get fullName
   if (!currentUser) throw new Error("User not authenticated");
 
   try {
-    // Make sure file is a Blob/File and has arrayBuffer
-    let arrayBuffer: ArrayBuffer;
+    const inputFile = InputFile.fromBuffer(file, file.name);
 
-    if (typeof file.arrayBuffer === "function") {
-      arrayBuffer = await file.arrayBuffer();
-    } else {
-      // Fallback for mobile
-      arrayBuffer = await new Response(file).arrayBuffer();
+    // Upload to bucket
+    const bucketFile = await storage.createFile(
+      bucketId,
+      ID.unique(),
+      inputFile,
+    );
+
+    // ✅ Safe fallbacks
+    const safeAccountId = accountId || currentUser.$id;
+    const safeOwnerId = ownerId || currentUser.$id;
+
+    if (!safeAccountId || !safeOwnerId) {
+      console.error("❌ Upload failed: missing accountId or ownerId", {
+        accountId,
+        ownerId,
+        currentUserId: currentUser.$id,
+      });
+      throw new Error("Missing required IDs for file upload");
     }
 
-    const buffer = Buffer.from(arrayBuffer);
-    const inputFile = InputFile.fromBuffer(buffer, file.name || `upload-${Date.now()}`);
-
-    const bucketFile = await storage.createFile(bucketId, ID.unique(), inputFile);
-
-    // Create database record
     const fileDocument = {
       type: getFileType(bucketFile.name).type,
       fullName: bucketFile.name,
       url: constructFileUrl(bucketFile.$id),
       extension: getFileType(bucketFile.name).extension,
       size: bucketFile.sizeOriginal,
-      owner: ownerId,
-      accountId,
+      owner: safeOwnerId,
+      accountId: safeAccountId,
       users: [],
       bucketFileId: bucketFile.$id,
     };
 
+    console.log("📦 Creating file document:", fileDocument);
+
     const newFile = await databases
-      .createDocument(databaseId, filesCollectionId, ID.unique(), fileDocument)
+      .createDocument(
+        databaseId,
+        filesCollectionId,
+        ID.unique(),
+        fileDocument,
+      )
       .catch(async (error: unknown) => {
         await storage.deleteFile(bucketId, bucketFile.$id);
         handleError(error, "Failed to create file document");
@@ -68,10 +81,11 @@ export const uploadFile = async ({
     revalidatePath(path);
     return parseStringify(newFile);
   } catch (error) {
-    console.error("Upload failed:", error);
     handleError(error, "Failed to upload file");
   }
 };
+
+
 
 
 // ==================== GET FILES ====================
