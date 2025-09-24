@@ -26,3 +26,20 @@ Qdrive is a full-stack storage management platform built with Next.js and Appwri
 ## Why Qdrive  
 
 Qdrive demonstrates how to architect a production-ready storage solution with Appwrite while integrating authentication, file operations, and user-friendly dashboards. It showcases best practices in Next.js, TypeScript, and Appwrite integration — serving as both a strong learning resource for developers and a proof of capability for recruiters.  
+
+---
+
+## Changelog  
+
+### v1.1 – PWA Support   
+- Added **Progressive Web App (PWA) functionality** using `next-pwa`.  
+- Offline caching for faster load times and resilience in low-connectivity environments.  
+- Installable as a standalone app on desktop and mobile devices.  
+- Custom app icons generated for multiple resolutions.
+
+### v1.0 – Initial Launch   
+- Core authentication system with OTP support.  
+- File upload, preview, rename, delete, and sharing capabilities.  
+- Dashboard with usage metrics and storage insights.  
+- Global search, sorting, and file categorization.  
+- Responsive UI with TailwindCSS and ShadCN. 
