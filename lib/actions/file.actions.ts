@@ -39,7 +39,7 @@ export const uploadFile = async ({
       inputFile,
     );
 
-    // ✅ Safe fallbacks
+    // Safe fallbacks
     const safeAccountId = accountId || currentUser.$id;
     const safeOwnerId = ownerId || currentUser.$id;
 
@@ -63,8 +63,6 @@ export const uploadFile = async ({
       users: [],
       bucketFileId: bucketFile.$id,
     };
-
-    console.log("📦 Creating file document:", fileDocument);
 
     const newFile = await databases
       .createDocument(
