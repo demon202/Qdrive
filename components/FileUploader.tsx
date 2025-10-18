@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
-
+import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
 import Image from "next/image";
 import Thumbnail from "@/components/Thumbnail";
 import { MAX_FILE_SIZE } from "@/app/constants/index";
-import { toast } from "sonner"
-import { uploadFile } from "@/lib/actions/file.actions";
+import { toast } from "sonner";
 import { usePathname } from "next/navigation";
+import { handleFileUpload } from "@/lib/fileClient";
 
 interface Props {
   ownerId: string;
@@ -21,34 +20,57 @@ interface Props {
 const FileUploader = ({ ownerId, accountId, className }: Props) => {
   const path = usePathname();
   const [files, setFiles] = useState<File[]>([]);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // ✅ Clear preview list when offline uploads finish syncing
+  useEffect(() => {
+    const handleFlush = () => {
+      setFiles([]);
+      setIsSyncing(false);
+      toast.success("All offline uploads synced ✅");
+    };
+
+    document.addEventListener("uploads-flushed", handleFlush);
+    return () => document.removeEventListener("uploads-flushed", handleFlush);
+  }, []);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       setFiles(acceptedFiles);
+      setIsSyncing(true);
 
       const uploadPromises = acceptedFiles.map(async (file) => {
         if (file.size > MAX_FILE_SIZE) {
           setFiles((prevFiles) =>
             prevFiles.filter((f) => f.name !== file.name),
           );
-
           return toast(`${file.name} is too large. Max file size is 50MB.`);
         }
 
-        return uploadFile({ file, ownerId, accountId, path })
-            .then((uploadedFile) => {
-              if (uploadedFile) {
-                setFiles((prevFiles) => prevFiles.filter((f) => f.name !== file.name));
-              }
-            })
-            .catch((err) => {
-              toast.error(`Upload failed for ${file.name}: ${err.message}`);
-              console.error("Upload error:", err);
-          },
-        );
+        try {
+          const result = await handleFileUpload({
+            file,
+            ownerId,
+            accountId,
+            path,
+          });
+
+          if (result?.offline) {
+            toast(`${file.name} saved offline. Will sync later.`);
+          } else {
+            setFiles((prevFiles) =>
+              prevFiles.filter((f) => f.name !== file.name),
+            );
+            toast(`${file.name} uploaded successfully!`);
+          }
+        } catch (err: any) {
+          toast.error(`Upload failed for ${file.name}: ${err.message}`);
+          console.error("Upload error:", err);
+        }
       });
 
       await Promise.all(uploadPromises);
+      setIsSyncing(false);
     },
     [ownerId, accountId, path],
   );
@@ -66,15 +88,17 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   return (
     <div {...getRootProps()} className="cursor-pointer">
       <input {...getInputProps()} />
-        <Button type="button" className={cn("uploader-button", className)}>
+      <Button type="button" className={cn("uploader-button", className)}>
         <input {...getInputProps()} className="hidden" />
         <Image src="/assets/icons/upload.svg" alt="upload" width={24} height={24} />
         <p>Upload</p>
-        </Button>
+      </Button>
 
       {files.length > 0 && (
         <ul className="uploader-preview-list">
-          <h4 className="h4 text-light-100">Uploading</h4>
+          <h4 className="h4 text-light-100">
+            {isSyncing ? "Uploading / Queued" : "Uploading"}
+          </h4>
 
           {files.map((file, index) => {
             const { type, extension } = getFileType(file.name);
@@ -98,6 +122,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
                       width={80}
                       height={26}
                       alt="Loader"
+                      unoptimized={true}
                     />
                   </div>
                 </div>

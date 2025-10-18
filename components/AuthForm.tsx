@@ -68,8 +68,16 @@ const AuthForm = ({type}: {type: FormType}) => {
     <>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} 
-      className="auth-form text-light-200">
-        <h1 className="h1 form-title">
+      className="auth-form text-light-200
+               w-[750px] h-[450px]
+               backdrop-blur-xl bg-white/10
+               shadow-[inset_1px_1px_24.5px_#FFFFFF40,0px_4px_4px_#00000040]
+               border border-white/20
+               rounded-[40px] p-10
+               flex flex-col justify-center items-center
+               transition-all duration-300
+               hover:shadow-[inset_1px_1px_24.5px_#FFFFFF60,0px_8px_16px_#00000060]">
+        <h1 className="h1 form-title mb-6">
             {type == "sign-in"? "Sign In" : "Sign Up"}
         </h1>
         {type == 'sign-up' && (

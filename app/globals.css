@@ -10,7 +10,7 @@
   }
 
   body {
-    @apply bg-bg-Dark text-dark-200 min-h-screen;
+    @apply bg-bg-Dark text-dark-200 min-h-screen ;
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -138,10 +138,10 @@
     @apply outline-none ring-offset-transparent focus:ring-transparent focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0;
   }
   .shad-input {
-    @apply border-none shadow-none p-0  placeholder:text-light-200 ;
-  }
+  @apply w-full border-none shadow-none rounded-full p-4 placeholder:text-white placeholder:opacity-40 bg-white opacity-15 text-bg-Dark;
+}
   .shad-form-item {
-    @apply flex h-[78px] flex-col justify-center rounded-xl border-light-300 px-4 ;
+     @apply flex h-[78px] flex-col justify-center rounded-xl border-light-300 px-4;
   }
   .shad-form-label {
     @apply text-light-100 mb-2 pt-2 w-full  ;
@@ -287,8 +287,12 @@
 
   /* AuthForm */
   .auth-form {
-    @apply flex max-h-[800px] w-full max-w-[580px] flex-col justify-center space-y-6 transition-all lg:h-full lg:space-y-8;
-  }
+  @apply w-[750px] h-[450px] rounded-[40px]
+        flex flex-col justify-center items-center backdrop-blur-xl bg-white/10
+        shadow-[inset_1px_1px_24.5px_#FFFFFF40,0px_4px_4px_#00000040]
+        border border-white/20
+         transition-all duration-300;
+}
   .form-title {
     @apply text-center text-light-100 md:text-left;
   }
