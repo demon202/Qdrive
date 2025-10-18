@@ -42,4 +42,4 @@ Qdrive demonstrates how to architect a production-ready storage solution with Ap
 - File upload, preview, rename, delete, and sharing capabilities.  
 - Dashboard with usage metrics and storage insights.  
 - Global search, sorting, and file categorization.  
-- Responsive UI with TailwindCSS and ShadCN.  
+- Responsive UI with TailwindCSS and ShadCN. 
