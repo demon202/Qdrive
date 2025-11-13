@@ -1,12 +1,42 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import BackgroundAnimation from '../constants/BackgroundAnimation';
 
-const layout = ({children} : { children: React.ReactNode }) => {
+const Layout = ({children} : { children: React.ReactNode }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Mobile check
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // 1024px for lg breakpoint
+    };
+
+    checkMobile();
+
+    // Listen for resize events
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div className='relative flex min-h-screen'>
-        {/* Background Animation - behind everything */}
-        <BackgroundAnimation />
+        {/* Conditionally render background based on device */}
+        {isMobile ? (
+          <div className='fixed inset-0 -z-10'>
+            <Image
+              src="/assets/images/Background_Mobile.png"
+              alt="Background"
+              fill
+              className='object-cover object-center'
+              priority
+              quality={90}
+            />
+          </div>
+        ) : (
+          <BackgroundAnimation />
+        )}
         
         <section className="relative hidden w-2/5 items-center justify-center p-10 lg:flex xl:2/5">
             {/* Background image with opacity */}
@@ -29,7 +59,7 @@ const layout = ({children} : { children: React.ReactNode }) => {
         <section className='relative z-10 flex flex-1 flex-col items-center p-4 py-10 lg:justify-center lg:p-10 lg:py-0'>
             <div className='mb-16 lg:hidden'>
                 <Image 
-                    src="/assets/icons/logo.png"
+                    src="/assets/icons/Logo.svg"
                     alt='logo'
                     width={224}
                     height={82}
@@ -42,4 +72,4 @@ const layout = ({children} : { children: React.ReactNode }) => {
   )
 }
 
-export default layout
+export default Layout

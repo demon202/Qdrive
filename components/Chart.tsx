@@ -17,39 +17,67 @@ import {
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { calculatePercentage, convertFileSize } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const chartConfig = {
-  size: {
-    label: "Size",
-  },
-  used: {
-    label: "Used",
-    color: "white",
-  },
+  size: { label: "Size" },
+  used: { label: "Used", color: "white" },
 } satisfies ChartConfig;
 
 export const Chart = ({ used = 0 }: { used: number }) => {
-  const chartData = [{ storage: "used", 10: used, fill: "white" }];
+  const chartData = [{ name: "used", storage: used, fill: "white" }];
+
+  const percentage = used ? calculatePercentage(used) : 0;
+  const percentageStr = percentage.toString();
+
+  // Track viewport width to make chart responsive
+  const [width, setWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateWidth = () => setWidth(window.innerWidth);
+    updateWidth();
+
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // Prevent rendering before width is known (avoids 1023px glitch)
+  if (width === null) return null;
+
+  // Smooth transition sizes based on width
+  const isMobile = width < 1024;
+  const innerRadius = isMobile ? 45 : 55;
+  const outerRadius = isMobile ? 52 : 70;
+  const polarRadius = isMobile ? [44, 40] : [58, 52];
 
   return (
-    <Card className="chart">
-      <CardContent className="flex-1 p-0">
+    <Card className="chart w-full lg:w-auto">
+      <CardContent className="chart-content">
         <ChartContainer config={chartConfig} className="chart-container">
           <RadialBarChart
+            width={isMobile ? 160 : 200}
+            height={isMobile ? 160 : 200}
             data={chartData}
             startAngle={90}
-            endAngle={Number(calculatePercentage(used)) + 90}
-            innerRadius={80}
-            outerRadius={110}
+            endAngle={90 + percentage}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
           >
             <PolarGrid
               gridType="circle"
               radialLines={false}
-              stroke="none"
+              stroke="rgba(255, 255, 255, 0.2)"
               className="polar-grid"
-              polarRadius={[86, 74]}
+              polarRadius={polarRadius}
+              strokeWidth={5}
+              fill="#242424"
             />
-            <RadialBar dataKey="storage" background cornerRadius={10} />
+            <RadialBar
+              dataKey="storage"
+              background={{ fill: "white" }}
+              cornerRadius={10}
+              fill="white"
+            />
             <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
               <Label
                 content={({ viewBox }) => {
@@ -63,22 +91,17 @@ export const Chart = ({ used = 0 }: { used: number }) => {
                       >
                         <tspan
                           x={viewBox.cx}
-                          y={viewBox.cy}
+                          y={(viewBox.cy || 0) - (isMobile ? 6 : 8)}
                           className="chart-total-percentage"
                         >
-                          {used && calculatePercentage(used)
-                            ? calculatePercentage(used)
-                                .toString()
-                                .replace(/^0+/, "")
-                            : "0"}
-                          %
+                          {percentageStr}%
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-white/70"
+                          y={(viewBox.cy || 0) + (isMobile ? 12 : 16)}
+                          className="chart-space-label"
                         >
-                          Space used
+                          Space Used
                         </tspan>
                       </text>
                     );
@@ -89,10 +112,11 @@ export const Chart = ({ used = 0 }: { used: number }) => {
           </RadialBarChart>
         </ChartContainer>
       </CardContent>
+
       <CardHeader className="chart-details">
-        <CardTitle className="chart-title">Available Storage</CardTitle>
+        <CardTitle className="chart-title sm:hidden lg:inline ">Available Storage</CardTitle>
         <CardDescription className="chart-description">
-          {used ? convertFileSize(used) : "2GB"} / 2GB
+          {used ? convertFileSize(used) : "4.5 MB"} / 2 GB
         </CardDescription>
       </CardHeader>
     </Card>

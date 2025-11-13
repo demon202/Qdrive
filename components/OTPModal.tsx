@@ -140,9 +140,9 @@ const OTPModal = ({ accountID, email }: { accountID: string; email: string }) =>
               {isLoading && (
                 <Image
                   src="/assets/icons/loader.svg"
-                  width={24}
-                  height={24}
-                  className="ml-2 animate-spin"
+                  width={20}
+                  height={20}
+                  className="ml-1 animate-spin"
                   alt="loader"
                 />
               )}

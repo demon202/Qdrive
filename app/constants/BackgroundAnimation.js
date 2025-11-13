@@ -57,6 +57,8 @@ export default function GlowingSpheres() {
           type: 'radial',
           colorStart: { r: 0x86, g: 0x06, b: 0x06 }, // 860606
           colorEnd: { r: 0x36, g: 0x1F, b: 0x20 },   // 361F20
+           angle: 55,
+           offset: 0.78,
         },
           vx: random(-0.3, 0.3),
           vy: random(-0.3, 0.3),
@@ -68,8 +70,10 @@ export default function GlowingSpheres() {
           mass: 200 * 200,
            gradient: {
           type: 'radial',
-          colorStart: { r: 0x2C, g: 0x21, b: 0x22 },   // 2C2122
-          colorEnd: { r: 0x16, g: 0x16, b: 0x16 }, // 161616
+          colorStart: { r: 0x16, g: 0x16, b: 0x16 }, // 161616
+          colorEnd: { r: 0x2C, g: 0x21, b: 0x22 },   // 2C2122
+          angle: 55,
+          offset: -0.28,
         },
           vx: random(-0.25, 0.25),
           vy: random(-0.25, 0.25),
@@ -83,6 +87,8 @@ export default function GlowingSpheres() {
           type: 'radial',
           colorStart: { r: 0x5B, g: 0x1F, b: 0x21 },// #5B1F21
           colorEnd: { r: 0x3A, g: 0x1D, b: 0x1E }, // #3A1D1E
+          angle: 55,
+          offset: 0.48,
         },
           vx: random(-0.3, 0.3),
           vy: random(-0.3, 0.3),
@@ -93,12 +99,23 @@ export default function GlowingSpheres() {
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize);
 
-    const drawGlowSphere = (x, y, r, baseColor, gradient = null) => {
+const drawGlowSphere = (x, y, r, baseColor, gradient = null) => {
   // Draw sharp outer edge with gradient or solid color
   if (gradient && gradient.type === 'radial') {
+    // Calculate offset position if angle is specified
+    let centerX = x;
+    let centerY = y;
+    
+    if (gradient.angle !== undefined) {
+      const angleRad = (gradient.angle * Math.PI) / 180;
+      const offset = (gradient.offset || 0.4) * r;
+      centerX = x + Math.cos(angleRad) * offset;
+      centerY = y + Math.sin(angleRad) * offset;
+    }
+    
     const radialGradient = ctx.createRadialGradient(
-      x, y, 0,           // inner circle (center)
-      x, y, r            // outer circle (edge)
+      centerX, centerY, 0,   // inner circle (offset center)
+      x, y, r                 // outer circle (sphere edge)
     );
     
     const { colorStart, colorEnd } = gradient;
@@ -114,16 +131,16 @@ export default function GlowingSpheres() {
   ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fill();
   
-  // Add subtle glow (only 3 layers) - use the outer gradient color or baseColor
-  const glowColor = (gradient && gradient.colorEnd) ? gradient.colorEnd : baseColor;
-  for (let i = 0; i < 3; i++) {
-    const glowRadius = r + (i * 8);
-    const alpha = (3 - i) / 15; // Very subtle glow
-    ctx.fillStyle = `rgba(${glowColor.r}, ${glowColor.g}, ${glowColor.b}, ${alpha})`;
-    ctx.beginPath();
-    ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  // // Add subtle glow (only 3 layers) - use the outer gradient color or baseColor
+  // const glowColor = (gradient && gradient.colorEnd) ? gradient.colorEnd : baseColor;
+  // for (let i = 0; i < 3; i++) {
+  //   const glowRadius = r + (i * 8);
+  //   const alpha = (3 - i) / 15; // Very subtle glow
+  //   ctx.fillStyle = `rgba(${glowColor.r}, ${glowColor.g}, ${glowColor.b}, ${alpha})`;
+  //   ctx.beginPath();
+  //   ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
+  //   ctx.fill();
+  // }
 };
 
     const animate = () => {

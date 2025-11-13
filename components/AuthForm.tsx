@@ -66,18 +66,11 @@ const AuthForm = ({type}: {type: FormType}) => {
   }
   return (
     <>
+    <div className='auth-container'>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} 
-      className="auth-form text-light-200
-               w-[750px] h-[450px]
-               backdrop-blur-xl bg-white/10
-               shadow-[inset_1px_1px_24.5px_#FFFFFF40,0px_4px_4px_#00000040]
-               border border-white/20
-               rounded-[40px] p-10
-               flex flex-col justify-center items-center
-               transition-all duration-300
-               hover:shadow-[inset_1px_1px_24.5px_#FFFFFF60,0px_8px_16px_#00000060]">
-        <h1 className="h1 form-title mb-6">
+      className="auth-form text-light-200">
+        <h1 className="h1 form-title mb-6  ">
             {type == "sign-in"? "Sign In" : "Sign Up"}
         </h1>
         {type == 'sign-up' && (
@@ -86,14 +79,12 @@ const AuthForm = ({type}: {type: FormType}) => {
           name="fullName"
           render={({ field }) => (
             <FormItem>
-
                 <div className="shad-form-item ">
-              <FormLabel className="shad-form-label">Full Name</FormLabel>
-               
+              <FormLabel className="shad-form-label ml-4">Full Name</FormLabel>               
               <FormControl>
                 <Input 
                 placeholder="Enter your full name" 
-                className="shad-input" {...field} />
+                className="shad-input mt-2" {...field} />
               </FormControl>
               </div>
               <FormMessage className="shad-form-message" />
@@ -105,21 +96,19 @@ const AuthForm = ({type}: {type: FormType}) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-
                 <div className="shad-form-item">
-              <FormLabel className="shad-form-label">Email</FormLabel>
-               
+              <FormLabel className="shad-form-label ml-4">Email</FormLabel>               
               <FormControl>
                 <Input 
                 placeholder="Enter your email" 
-                className="shad-input" {...field} />
+                className="shad-input mt-2" {...field} />
               </FormControl>
               </div>
               <FormMessage className="shad-form-message" />
             </FormItem>
           )}
         /> 
-        <Button type="submit" className="form-submit-button" disabled={isLoading}>
+        <Button type="submit" className="shad-form-item form-submit-button mt-8 mb-8" disabled={isLoading}>
              {type == "sign-in"? "Sign In" : "Sign Up"}
              {isLoading && (
                              <Image 
@@ -135,7 +124,7 @@ const AuthForm = ({type}: {type: FormType}) => {
             {errorMessage && (
                 <p className='error-message'>*{errorMessage}</p>
             )}
-            <div className='body-2 flex justify-center'>
+            <div className='body-2 flex justify-center mt-5'>
                 <p className='text-light-100'>
                      {type == "sign-in"? "Don't have an account?" : "Already have an account?"}
                 </p>
@@ -145,6 +134,7 @@ const AuthForm = ({type}: {type: FormType}) => {
             </div>
       </form>
     </Form>
+    </div>
     {/*OTP*/}
 
     {accountID && (<OTPModal email = {form.getValues('email')} accountID = {accountID} />

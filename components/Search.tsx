@@ -53,7 +53,7 @@ const Search = () => {
 
   return (
     <div className="search">
-      <div className="search-input-wrapper">
+      <div className="search-input-wrapper" >
         <Image
           src="/assets/icons/search.svg"
           alt="Search"
@@ -62,7 +62,7 @@ const Search = () => {
         />
         <Input
           value={query}
-          placeholder="Search..."
+          placeholder="Search files..."
           className="search-input"
           onChange={(e) => setQuery(e.target.value)}
         />

@@ -22,7 +22,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // ✅ Clear preview list when offline uploads finish syncing
+  // Clear preview list when offline uploads finish syncing
   useEffect(() => {
     const handleFlush = () => {
       setFiles([]);
@@ -90,7 +90,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
       <input {...getInputProps()} />
       <Button type="button" className={cn("uploader-button", className)}>
         <input {...getInputProps()} className="hidden" />
-        <Image src="/assets/icons/upload.svg" alt="upload" width={24} height={24} />
+        <Image src="/assets/icons/upload.svg" alt="cloud with up arrow" width={24} height={24} />
         <p>Upload</p>
       </Button>
 
